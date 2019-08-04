@@ -2,9 +2,7 @@
 
 namespace spec\ChipBeekeeper\Domain;
 
-use ChipBeekeeper\Domain\HitPointCounter;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class HitPointCounterSpec extends ObjectBehavior
 {
