@@ -9,7 +9,6 @@ Feature: Hitting a bee
     Then the queen bee should have 92 remaining hit points
     Then the queen bee should still be alive
 
-  @wip
   Scenario: Killing the queen bee
     Given there is a queen bee with 4 remaining hit points
     When I hit the queen bee
