@@ -1,6 +1,7 @@
 <?php
 
 use ChipBeekeeper\Application\PlayBeekeeperCommand;
+use ChipBeekeeper\Domain\Hive;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Application;
 
@@ -13,6 +14,10 @@ return [
         },
     'commands' =>
         function (ContainerInterface $container) {
-            return [new PlayBeekeeperCommand()];
+            return [new PlayBeekeeperCommand($container->get('hive'))];
         },
+    'hive' =>
+        function (ContainerInterface $container) {
+            return new Hive();
+        }
     ];

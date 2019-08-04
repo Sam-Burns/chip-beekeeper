@@ -41,4 +41,19 @@ class HiveSpec extends ObjectBehavior
     {
         $this->getQueen()->shouldHaveType(QueenBee::class);
     }
+
+    function it_can_report_on_the_population()
+    {
+        $this->noOfQueenBees()->shouldBe(1);
+        $this->noOfWorkerBees()->shouldBe(5);
+        $this->noOfDroneBees()->shouldBe(8);
+
+        for ($noOfHits = 1; $noOfHits <= 93; $noOfHits++) {
+            $this->hitRandomBee();
+        }
+
+        $this->noOfQueenBees()->shouldBe(0);
+        $this->noOfWorkerBees()->shouldBe(0);
+        $this->noOfDroneBees()->shouldBe(0);
+    }
 }

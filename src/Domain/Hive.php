@@ -34,17 +34,35 @@ class Hive
 
     public function noOfQueenBees(): int
     {
-        return count($this->bees['queen-bees']);
+        $liveBees = array_filter(
+            $this->bees['queen-bees'],
+            function (Bee $bee): bool {
+                return $bee->isAlive();
+            }
+        );
+        return count($liveBees);
     }
 
     public function noOfWorkerBees(): int
     {
-        return count($this->bees['worker-bees']);
+        $liveBees = array_filter(
+            $this->bees['worker-bees'],
+            function (Bee $bee): bool {
+                return $bee->isAlive();
+            }
+        );
+        return count($liveBees);
     }
 
     public function noOfDroneBees(): int
     {
-        return count($this->bees['drone-bees']);
+        $liveBees = array_filter(
+            $this->bees['drone-bees'],
+            function (Bee $bee): bool {
+                return $bee->isAlive();
+            }
+        );
+        return count($liveBees);
     }
 
     public function hitQueenBee()

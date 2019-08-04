@@ -5,11 +5,11 @@ default:
     servicelevel:
       paths: [ '%paths.base%/tests/behat/features/feature_files' ]
       filters:
-        tags: ~@wip
+        tags: ~@wip&&~@cli
       contexts: [ 'BehatContexts\ServiceLevelContext' ]
 
     cli:
       paths: [ '%paths.base%/tests/behat/features/feature_files' ]
       filters:
-        tags: ~@wip&&@critical
+        tags: ~@wip&&@cli
       contexts: [ 'BehatContexts\CliContext' ]
