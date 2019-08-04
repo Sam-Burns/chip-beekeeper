@@ -3,7 +3,7 @@ namespace ChipBeekeeper\Domain;
 
 abstract class Bee
 {
-    protected const NAME = '';
+    public const NAME = '';
     protected const FULL_LIFESPAN = -1;
     protected const HIT_POINTS_LOST_FROM_ONE_HIT = -1;
 

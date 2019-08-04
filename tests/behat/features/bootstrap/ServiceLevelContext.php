@@ -1,8 +1,8 @@
 <?php
 namespace BehatContexts;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
+use ChipBeekeeper\Domain\Bee;
 use ChipBeekeeper\Domain\DroneBee;
 use ChipBeekeeper\Domain\Hive;
 use ChipBeekeeper\Domain\QueenBee;
@@ -25,6 +25,9 @@ class ServiceLevelContext implements Context
 
     /** @var int */
     private $numberOfHits;
+
+    /** @var Bee */
+    private $beeThatGotHit;
 
     /**
      * @Given there is a queen bee with full lifespan
@@ -159,15 +162,15 @@ class ServiceLevelContext implements Context
      */
     public function iHitARandomBee()
     {
-        $this->hive->hitRandomBee();
+        $this->beeThatGotHit = $this->hive->hitRandomBee();
     }
 
     /**
-     * @Then :noOfDamagedBees of the bees should be damaged
+     * @Then one of the bees should be damaged
      */
-    public function ofTheBeesShouldBeDamaged($noOfDamagedBees)
+    public function oneOfTheBeesShouldBeDamaged()
     {
-        Assert::equalTo($noOfDamagedBees, $this->hive->noOfDamagedBees());
+        Assert::assertTrue($this->beeThatGotHit->isDamaged());
     }
 
     /**
