@@ -2,7 +2,6 @@
 namespace BehatContexts;
 
 use Behat\Behat\Context\Context;
-use ChipBeekeeper\Domain\Bee;
 use ChipBeekeeper\Domain\DroneBee;
 use ChipBeekeeper\Domain\Hive;
 use ChipBeekeeper\Domain\QueenBee;
@@ -25,9 +24,6 @@ class ServiceLevelContext implements Context
 
     /** @var int */
     private $numberOfHits;
-
-    /** @var Bee */
-    private $beeThatGotHit;
 
     /**
      * @Given there is a queen bee with full lifespan
@@ -152,9 +148,9 @@ class ServiceLevelContext implements Context
         int $noOfWorkerBees,
         int $noOfDroneBees
     ) {
-        Assert::equalTo($noOfQueenBees, $this->hive->noOfQueenBees());
-        Assert::equalTo($noOfWorkerBees, $this->hive->noOfWorkerBees());
-        Assert::equalTo($noOfDroneBees, $this->hive->noOfDroneBees());
+        Assert::equalTo($noOfQueenBees, $this->hive->getBeeSwarm()->getNoOfQueenBees());
+        Assert::equalTo($noOfWorkerBees, $this->hive->getBeeSwarm()->getNoOfWorkerBees());
+        Assert::equalTo($noOfDroneBees, $this->hive->getBeeSwarm()->getNoOfDroneBees());
     }
 
     /**
@@ -162,15 +158,7 @@ class ServiceLevelContext implements Context
      */
     public function iHitARandomBee()
     {
-        $this->beeThatGotHit = $this->hive->hitRandomBee();
-    }
-
-    /**
-     * @Then one of the bees should be damaged
-     */
-    public function oneOfTheBeesShouldBeDamaged()
-    {
-        Assert::assertTrue($this->beeThatGotHit->isDamaged());
+        $this->hive->hitRandomBee();
     }
 
     /**

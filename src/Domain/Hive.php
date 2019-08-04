@@ -7,7 +7,10 @@ class Hive
     private $queenBee;
 
     /** @var BeeSwarm */
-    private $beeCollection;
+    private $beeSwarm;
+
+    /** @var ?Bee */
+    private $lastBeeHit;
 
     public function __construct()
     {
@@ -23,7 +26,7 @@ class Hive
             $droneBees[] = DroneBee::newWithFullLifespan();
         }
 
-        $this->beeCollection = new BeeSwarm([$this->queenBee], $workerBees, $droneBees);
+        $this->beeSwarm = new BeeSwarm([$this->queenBee], $workerBees, $droneBees);
     }
 
     public function getQueen(): QueenBee
@@ -33,17 +36,17 @@ class Hive
 
     public function noOfQueenBees(): int
     {
-        return $this->beeCollection->getNoOfQueens();
+        return $this->beeSwarm->getNoOfQueenBees();
     }
 
     public function noOfWorkerBees(): int
     {
-        return $this->beeCollection->getNoOfWorkerBees();
+        return $this->beeSwarm->getNoOfWorkerBees();
     }
 
     public function noOfDroneBees(): int
     {
-        return $this->beeCollection->getNoOfDroneBees();
+        return $this->beeSwarm->getNoOfDroneBees();
     }
 
     public function hitQueenBee()
@@ -51,18 +54,34 @@ class Hive
         $this->queenBee->hit();
     }
 
-    public function hitRandomBee(): Bee
+    public function hitRandomBee()
     {
         $randomBee = $this->getRandomLiveBee();
         $randomBee->hit();
         $this->ifQueenBeeIsDeadThenKillAllOtherBees();
-        return $randomBee;
+        $this->lastBeeHit = $randomBee;
+    }
+
+    public function getBeeSwarm(): BeeSwarm
+    {
+        return $this->beeSwarm;
+    }
+
+    public function getReportingDetails(): array
+    {
+        return [
+            'bee-name' => $this->lastBeeHit->getName(),
+            'remaining-hit-points' => $this->lastBeeHit->getRemainingHitPoints(),
+            'no-of-queen-bees' => $this->beeSwarm->getNoOfQueenBees(),
+            'no-of-worker-bees' => $this->beeSwarm->getNoOfWorkerBees(),
+            'no-of-drone-bees' => $this->beeSwarm->getNoOfDroneBees(),
+        ];
     }
 
     private function ifQueenBeeIsDeadThenKillAllOtherBees()
     {
         if (!$this->queenBee->isAlive()) {
-            foreach ($this->beeCollection->getAllBees() as $bee) {
+            foreach ($this->beeSwarm->getAllBees() as $bee) {
                 $bee->kill();
             }
         }
@@ -70,11 +89,11 @@ class Hive
 
     private function getRandomLiveBee(): Bee
     {
-        return $this->beeCollection->getRandomLiveBee();
+        return $this->beeSwarm->getRandomLiveBee();
     }
 
     public function allBeesAreDead(): bool
     {
-        return $this->beeCollection->allBeesAreDead();
+        return $this->beeSwarm->allBeesAreDead();
     }
 }

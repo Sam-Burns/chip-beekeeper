@@ -1,7 +1,6 @@
 <?php
 namespace ChipBeekeeper\Application;
 
-use ChipBeekeeper\Domain\Bee;
 use ChipBeekeeper\Domain\Hive;
 use Symfony\Component\Console\Command\Command as SymfonyConsoleCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -32,9 +31,8 @@ class PlayBeekeeperCommand extends SymfonyConsoleCommand
 
         while (!$this->hive->allBeesAreDead()) {
             $this->acceptUsersTurn($input, $output);
-            $beeThatWasHit = $this->hive->hitRandomBee();
-            $this->reportOnBeeThatWasHit($beeThatWasHit, $output);
-            $this->reportOnHivePopulation($output);
+            $this->hive->hitRandomBee();
+            $this->reportOnTurn($this->hive, $output);
             ++$totalHits;
         }
 
@@ -51,22 +49,16 @@ class PlayBeekeeperCommand extends SymfonyConsoleCommand
         }
     }
 
-    private function reportOnBeeThatWasHit(Bee $bee, OutputInterface $output)
+    private function reportOnTurn(Hive $hive, OutputInterface $output)
     {
-        $output->write(sprintf(
-            "You hit a %s.  It now has %d points left.  ",
-            $bee->getName(),
-            $bee-> getRemainingHitPoints()
-        ));
-    }
-
-    private function reportOnHivePopulation(OutputInterface $output)
-    {
+        $reportingDetails = $hive->getReportingDetails();
         $output->writeln(sprintf(
-            'There are now %d queen bees, %d worker bees and %d drone bees left alive',
-            $this->hive->noOfQueenBees(),
-            $this->hive->noOfWorkerBees(),
-            $this->hive->noOfDroneBees()
+            "You hit a %s. It now has %d points left. %d Queen Bees, %d Worker Bees and %d Drone Bees remain.",
+            $reportingDetails['bee-name'],
+            $reportingDetails['remaining-hit-points'],
+            $reportingDetails['no-of-queen-bees'],
+            $reportingDetails['no-of-worker-bees'],
+            $reportingDetails['no-of-drone-bees'],
         ));
     }
 }

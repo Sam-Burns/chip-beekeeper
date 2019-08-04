@@ -59,7 +59,7 @@ class BeeSwarm
         );
     }
 
-    public function getNoOfQueens(): int
+    public function getNoOfQueenBees(): int
     {
         return count($this->filterForLiveBees($this->queenBees));
     }

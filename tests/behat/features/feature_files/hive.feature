@@ -11,7 +11,6 @@ Feature: Hitting bees in the hive
     Given there is a new hive
     When I hit a random bee
     Then the hive should have 1 queen bee, 5 worker bees and 8 drone bees
-    And one of the bees should be damaged
 
   Scenario: Hitting the hive until all bees are dead
     Given there is a new hive
