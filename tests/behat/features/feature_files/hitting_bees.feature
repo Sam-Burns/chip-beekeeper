@@ -15,23 +15,19 @@ Feature: Hitting a bee
     Then the queen bee should have 0 remaining hit points
     Then the queen bee should be dead
 
-  @wip
   Scenario: Worker bee's lifespan
     Given there is a worker bee with full lifespan
     Then the worker bee should have 75 remaining hit points
 
-  @wip
   Scenario: Hitting a worker bee
     Given there is a worker bee with full lifespan
     When I hit the worker bee
     Then the worker bee should have 65 remaining hit points
 
-  @wip
   Scenario: Drone bee's lifespan
     Given there is a drone bee with full lifespan
-    Then the worker bee should have 50 remaining hit points
+    Then the drone bee should have 50 remaining hit points
 
-  @wip
   Scenario: Hitting a drone bee
     Given there is a drone bee with full lifespan
     When I hit the drone bee
