@@ -1,9 +1,9 @@
 <?php
 namespace ChipBeekeeper\Application;
 
+use ChipBeekeeper\Domain\Bee;
 use ChipBeekeeper\Domain\Hive;
 use Symfony\Component\Console\Command\Command as SymfonyConsoleCommand;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
@@ -28,14 +28,12 @@ class PlayBeekeeperCommand extends SymfonyConsoleCommand
     {
         $output->writeln('Welcome to Beekeeper');
 
-        $questionHelper = $this->getHelper('question');
-        $question = new Question("Take your turn by typing 'hit': [hit] ", 'hit');
-
         $totalHits = 0;
 
         while (!$this->hive->allBeesAreDead()) {
-            $this->acceptUsersTurn($questionHelper, $input, $output, $question);
-            $this->hive->hitRandomBee();
+            $this->acceptUsersTurn($input, $output);
+            $beeThatWasHit = $this->hive->hitRandomBee();
+            $this->reportOnBeeThatWasHit($beeThatWasHit, $output);
             $this->reportOnHivePopulation($output);
             ++$totalHits;
         }
@@ -43,12 +41,23 @@ class PlayBeekeeperCommand extends SymfonyConsoleCommand
         $output->writeln("It took $totalHits hits to kill all the bees");
     }
 
-    private function acceptUsersTurn(QuestionHelper $questionHelper, InputInterface $input, OutputInterface $output, Question $question)
+    private function acceptUsersTurn(InputInterface $input, OutputInterface $output)
     {
+        $questionHelper = $this->getHelper('question');
+        $question = new Question("Take your turn by typing 'hit': [hit] ", 'hit');
         $inputWord = $questionHelper->ask($input, $output, $question);
         if ($inputWord !== 'hit') {
             throw new PebkacException();
         }
+    }
+
+    private function reportOnBeeThatWasHit(Bee $bee, OutputInterface $output)
+    {
+        $output->write(sprintf(
+            "You hit a %s.  It now has %d points left.  ",
+            $bee->getName(),
+            $bee-> getRemainingHitPoints()
+        ));
     }
 
     private function reportOnHivePopulation(OutputInterface $output)

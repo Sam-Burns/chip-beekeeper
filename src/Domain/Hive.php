@@ -64,14 +64,15 @@ class Hive
         $this->queenBee->hit();
     }
 
-    public function hitRandomBee()
+    public function hitRandomBee(): ?Bee
     {
         if ($this->allBeesAreDead()) {
-            return;
+            return null;
         }
         $randomBee = $this->getRandomLiveBee();
         $randomBee->hit();
         $this->ifQueenBeeIsDeadThenKillAllOtherBees();
+        return $randomBee;
     }
 
     private function ifQueenBeeIsDeadThenKillAllOtherBees()

@@ -3,6 +3,7 @@ namespace ChipBeekeeper\Domain;
 
 abstract class Bee
 {
+    protected const NAME = '';
     protected const FULL_LIFESPAN = -1;
     protected const HIT_POINTS_LOST_FROM_ONE_HIT = -1;
 
@@ -48,5 +49,10 @@ abstract class Bee
         while ($this->isAlive()) {
             $this->hit();
         }
+    }
+
+    public function getName(): string
+    {
+        return static::NAME;
     }
 }
