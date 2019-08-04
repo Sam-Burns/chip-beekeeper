@@ -1,0 +1,7 @@
+suites:
+  main:
+    namespace: ChipBeekeeper
+    psr4_prefix: ChipBeekeeper
+    spec_prefix: spec
+    src_path: src/
+    spec_path: tests/phpspec

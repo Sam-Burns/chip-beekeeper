@@ -1,5 +1,37 @@
 {
+    "name": "samburns/chip-beekeeper",
+
+    "license": "MIT",
+
     "require": {
-        "symfony/console": "^4.3"
+        "php":             "^7.3",
+        "symfony/console": "^4.3",
+        "php-di/php-di":   "^6.0"
+    },
+
+    "require-dev": {
+        "phpunit/phpunit": "^8.3",
+        "phpspec/phpspec": "^5.1",
+        "behat/behat":     "^3.5"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "ChipBeekeeper\\": "src/"
+        }
+    },
+
+    "autoload-dev": {
+        "psr-4": {
+            "BehatContexts\\": "tests/behat/features/bootstrap"
+        }
+    },
+
+    "scripts": {
+        "test": [
+            "./vendor/bin/behat",
+            "./vendor/bin/phpspec run",
+            "./vendor/bin/phpunit"
+        ]
     }
 }

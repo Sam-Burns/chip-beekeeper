@@ -9,3 +9,7 @@ Get shell:
 Run application:
 
 `php bin/beekeeper.php`
+
+Run tests from within container:
+
+`composer test`
