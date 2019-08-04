@@ -3,7 +3,6 @@ Feature: Hitting a bee
   As a player
   I want to hit a bee and damage it
 
-  @wip
   Scenario: Hitting the queen bee
     Given there is a queen bee with full lifespan
     When I hit the queen bee
