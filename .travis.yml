@@ -1,0 +1,10 @@
+language: php
+
+services:
+  - docker
+
+before_install:
+  - docker build -t beekeeper-container .
+
+script:
+  - docker run beekeeper-container /bin/bash -c "composer test"
