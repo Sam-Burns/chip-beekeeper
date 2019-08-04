@@ -176,7 +176,7 @@ class ServiceLevelContext implements Context
     public function iHitTheHiveUntilAllBeesAreDead()
     {
         $this->numberOfHits = 0;
-        while(!$this->hive->allBeesAreDead()) {
+        while (!$this->hive->allBeesAreDead()) {
             $this->hive->hitRandomBee();
             ++$this->numberOfHits;
         }
