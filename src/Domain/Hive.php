@@ -1,73 +1,67 @@
 <?php
-
 namespace ChipBeekeeper\Domain;
 
 class Hive
 {
-    private const INITIAL_NO_OF_QUEEN_BEES = 1;
-    private const INITIAL_NO_OF_WORKER_BEES = 5;
-    private const INITIAL_NO_OF_DRONE_BEES = 8;
+    /** @var QueenBee */
+    private $queenBee;
 
-    private $bees = [
-        'queen-bees' => [],
-        'worker-bees' => [],
-        'drone-bees' => [],
-    ];
+    /** @var WorkerBee[] */
+    private $workerBees;
+
+    /** @var DroneBee[] */
+    private $droneBees;
 
     public function __construct()
     {
-        for ($beeNo = 1; $beeNo <= static::INITIAL_NO_OF_QUEEN_BEES; $beeNo++) {
-            $this->bees['queen-bees'][] = QueenBee::newWithFullLifespan();
+        $this->queenBee = QueenBee::newWithFullLifespan();
+        for ($beeNo = 1; $beeNo <= 5; $beeNo++) {
+            $this->workerBees[] = WorkerBee::newWithFullLifespan();
         }
-        for ($beeNo = 1; $beeNo <= static::INITIAL_NO_OF_WORKER_BEES; $beeNo++) {
-            $this->bees['worker-bees'][] = WorkerBee::newWithFullLifespan();
-        }
-        for ($beeNo = 1; $beeNo <= static::INITIAL_NO_OF_DRONE_BEES; $beeNo++) {
-            $this->bees['drone-bees'][] = DroneBee::newWithFullLifespan();
+        for ($beeNo = 1; $beeNo <= 8; $beeNo++) {
+            $this->droneBees[] = DroneBee::newWithFullLifespan();
         }
     }
 
     public function getQueen(): QueenBee
     {
-        return $this->bees['queen-bees'][0];
+        return $this->queenBee;
     }
 
     public function noOfQueenBees(): int
     {
-        $liveBees = array_filter(
-            $this->bees['queen-bees'],
+        return $this->queenBee->isAlive() ? 1 : 0;
+    }
+
+    /**
+     * @param Bee[] $bees
+     * @return Bee[]
+     */
+    private function filterForLiveBees(array $bees): array
+    {
+        return array_filter(
+            $bees,
             function (Bee $bee): bool {
                 return $bee->isAlive();
             }
         );
-        return count($liveBees);
     }
 
     public function noOfWorkerBees(): int
     {
-        $liveBees = array_filter(
-            $this->bees['worker-bees'],
-            function (Bee $bee): bool {
-                return $bee->isAlive();
-            }
-        );
-        return count($liveBees);
+        $liveWorkerBees = $this->filterForLiveBees($this->workerBees);
+        return count($liveWorkerBees);
     }
 
     public function noOfDroneBees(): int
     {
-        $liveBees = array_filter(
-            $this->bees['drone-bees'],
-            function (Bee $bee): bool {
-                return $bee->isAlive();
-            }
-        );
-        return count($liveBees);
+        $liveDroneBees = $this->filterForLiveBees($this->droneBees);
+        return count($liveDroneBees);
     }
 
     public function hitQueenBee()
     {
-        $this->getQueen()->hit();
+        $this->queenBee->hit();
     }
 
     public function hitRandomBee()
@@ -77,68 +71,47 @@ class Hive
         }
         $randomBee = $this->getRandomLiveBee();
         $randomBee->hit();
-        if ($randomBee instanceof QueenBee && !$randomBee->isAlive()) {
-            foreach ($this->bees['worker-bees'] as $workerBee) {
-                $workerBee->kill();
-            }
-            foreach ($this->bees['drone-bees'] as $droneBee) {
-                $droneBee->kill();
+        $this->ifQueenBeeIsDeadThenKillAllOtherBees();
+    }
+
+    private function ifQueenBeeIsDeadThenKillAllOtherBees()
+    {
+        if (!$this->queenBee->isAlive()) {
+            foreach ($this->workerBees + $this->droneBees as $bee) {
+                $bee->kill();
             }
         }
     }
 
+    /**
+     * @return Bee[]
+     */
+    private function getAllBees(): array
+    {
+        return array_merge([$this->queenBee], $this->workerBees, $this->droneBees);
+    }
+
     private function getRandomLiveBee(): Bee
     {
-        $allBees = $this->bees['queen-bees'] + $this->bees['worker-bees'] + $this->bees['drone-bees'];
-
-        $allLiveBees = array_filter(
-            $allBees,
-            function (Bee $bee): bool {
-                return $bee->isAlive();
-            }
-        );
-
+        $allBees = $this->getAllBees();
+        $allLiveBees = $this->filterForLiveBees($allBees);
         return $allLiveBees[array_rand($allLiveBees)];
     }
 
     public function allBeesAreDead(): bool
     {
-        foreach ($this->bees['queen-bees'] as $bee) {
-            if ($bee->isAlive()) {
-                return false;
-            }
-        }
-        foreach ($this->bees['worker-bees'] as $bee) {
-            if ($bee->isAlive()) {
-                return false;
-            }
-        }
-        foreach ($this->bees['drone-bees'] as $bee) {
-            if ($bee->isAlive()) {
-                return false;
-            }
-        }
-        return true;
+        $liveBees = $this->filterForLiveBees($this->getAllBees());
+        return count($liveBees) === 0;
     }
 
     public function noOfDamagedBees(): int
     {
-        $noOfDamagedBees = 0;
-        foreach ($this->bees['queen-bees'] as $bee) {
-            if ($bee->isDamaged()) {
-                ++$noOfDamagedBees;
+        $damagedBees = array_filter(
+            $this->getAllBees(),
+            function (Bee $bee): bool {
+                return $bee->isDamaged();
             }
-        }
-        foreach ($this->bees['worker-bees'] as $bee) {
-            if ($bee->isDamaged()) {
-                ++$noOfDamagedBees;
-            }
-        }
-        foreach ($this->bees['drone-bees'] as $bee) {
-            if ($bee->isDamaged()) {
-                ++$noOfDamagedBees;
-            }
-        }
-        return $noOfDamagedBees;
+        );
+        return count($damagedBees);
     }
 }

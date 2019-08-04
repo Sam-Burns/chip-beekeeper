@@ -1,10 +1,12 @@
 <?php
 namespace spec\ChipBeekeeper\Domain;
 
+use ChipBeekeeper\Domain\Hive;
 use ChipBeekeeper\Domain\QueenBee;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
+/** @mixin Hive */
 class HiveSpec extends ObjectBehavior
 {
     function it_is_initialised_with_the_right_population()
