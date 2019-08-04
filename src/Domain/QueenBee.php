@@ -3,39 +3,35 @@ namespace ChipBeekeeper\Domain;
 
 class QueenBee
 {
-    private $hitPoints;
+    private $hitPointCounter;
 
-    private function __construct(int $hitPoints)
+    private function __construct(HitPointCounter $hitPointCounter)
     {
-        $this->hitPoints = $hitPoints;
+        $this->hitPointCounter = $hitPointCounter;
     }
 
     public static function newWithRemainingHitPoints(int $remainingHitPoints)
     {
-        $queenBee = new QueenBee($remainingHitPoints);
-        return $queenBee;
+        return new QueenBee(new HitPointCounter($remainingHitPoints));
     }
 
     public static function newWithFullLifespan(): self
     {
-        return new QueenBee(100);
+        return new QueenBee(new HitPointCounter(100));
     }
 
     public function getRemainingHitPoints(): int
     {
-        return $this->hitPoints;
+        return $this->hitPointCounter->getRemainingHitPoints();
     }
 
     public function hit()
     {
-        $this->hitPoints -= 8;
-        if ($this->hitPoints < 0) {
-            $this->hitPoints = 0;
-        }
+        $this->hitPointCounter->deduct(8);
     }
 
     public function isAlive(): bool
     {
-        return $this->hitPoints > 0;
+        return !$this->hitPointCounter->hasRunOutOfHitPoints();
     }
 }
