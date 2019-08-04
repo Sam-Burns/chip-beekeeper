@@ -2,12 +2,15 @@
 
 namespace spec\ChipBeekeeper\Domain;
 
-use ChipBeekeeper\Domain\WorkerBee;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class WorkerBeeSpec extends ObjectBehavior
 {
+    function let()
+    {
+        $this->beConstructedThrough('newWithFullLifespan');
+    }
+
     function it_is_initialised_with_75_hit_points()
     {
         $this->beConstructedThrough('newWithFullLifespan');
@@ -19,5 +22,12 @@ class WorkerBeeSpec extends ObjectBehavior
         $this->beConstructedThrough('newWithFullLifespan');
         $this->hit();
         $this->getRemainingHitPoints()->shouldBe(65);
+    }
+
+    function it_can_be_killed()
+    {
+        $this->isAlive()->shouldBe(true);
+        $this->kill();
+        $this->isAlive()->shouldBe(false);
     }
 }

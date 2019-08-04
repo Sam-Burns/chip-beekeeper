@@ -1,5 +1,4 @@
 <?php
-
 namespace spec\ChipBeekeeper\Domain;
 
 use PhpSpec\ObjectBehavior;

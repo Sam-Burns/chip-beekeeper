@@ -4,17 +4,27 @@ namespace BehatContexts;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use ChipBeekeeper\Domain\DroneBee;
+use ChipBeekeeper\Domain\Hive;
 use ChipBeekeeper\Domain\QueenBee;
 use ChipBeekeeper\Domain\WorkerBee;
 use PHPUnit\Framework\Assert;
 
 class ServiceLevelContext implements Context
 {
+    /** @var QueenBee */
     private $queenBee;
 
+    /** @var WorkerBee */
     private $workerBee;
 
+    /** @var WorkerBee */
     private $droneBee;
+
+    /** @var Hive */
+    private $hive;
+
+    /** @var int */
+    private $numberOfHits;
 
     /**
      * @Given there is a queen bee with full lifespan
@@ -66,6 +76,14 @@ class ServiceLevelContext implements Context
     }
 
     /**
+     * @Then the queen bee of the hive should be dead
+     */
+    public function theQueenBeeOfTheHiveShouldBeDead()
+    {
+        Assert::isFalse($this->hive->getQueen()->isAlive());
+    }
+
+    /**
      * @Given there is a worker bee with full lifespan
      */
     public function thereIsAWorkerBeeWithFullLifespan()
@@ -113,5 +131,80 @@ class ServiceLevelContext implements Context
     {
         $actualRemainingHitPoints = $this->droneBee->getRemainingHitPoints();
         Assert::equalTo($remainingHitPoints, $actualRemainingHitPoints);
+    }
+
+    /**
+     * @Given there is a new hive
+     */
+    public function thereIsANewHive()
+    {
+        $this->hive = new Hive();
+    }
+
+    /**
+     * @Then the hive should have :noOfQueenBees queen bee, :noOfWorkerBees worker bees and :noOfDroneBees drone bees
+     */
+    public function theHiveShouldHaveQueenBeeWorkerBeesAndDroneBees(
+        int $noOfQueenBees,
+        int $noOfWorkerBees,
+        int $noOfDroneBees
+    ) {
+        Assert::equalTo($noOfQueenBees, $this->hive->noOfQueenBees());
+        Assert::equalTo($noOfWorkerBees, $this->hive->noOfWorkerBees());
+        Assert::equalTo($noOfDroneBees, $this->hive->noOfDroneBees());
+    }
+
+    /**
+     * @When I hit a random bee
+     */
+    public function iHitARandomBee()
+    {
+        $this->hive->hitRandomBee();
+    }
+
+    /**
+     * @Then :noOfDamagedBees of the bees should be damaged
+     */
+    public function ofTheBeesShouldBeDamaged($noOfDamagedBees)
+    {
+        Assert::equalTo($noOfDamagedBees, $this->hive->noOfDamagedBees());
+    }
+
+    /**
+     * @When I hit the hive until all bees are dead
+     */
+    public function iHitTheHiveUntilAllBeesAreDead()
+    {
+        $this->numberOfHits = 0;
+        while(!$this->hive->allBeesAreDead()) {
+            $this->hive->hitRandomBee();
+            ++$this->numberOfHits;
+        }
+    }
+
+    /**
+     * @Then the number of hits required should have been no more than :maxTotalHits
+     */
+    public function theNumberOfHitsRequiredShouldHaveBeenNoMoreThan(int $maxTotalHits)
+    {
+        Assert::lessThanOrEqual($maxTotalHits, $this->numberOfHits);
+    }
+
+    /**
+     * @When I hit the queen bee :noOfHits times
+     */
+    public function iHitTheQueenBeeTimes($noOfHits)
+    {
+        for ($hitNo = 1; $hitNo <= $noOfHits; ++$hitNo) {
+            $this->hive->hitQueenBee();
+        }
+    }
+
+    /**
+     * @Then therefore all the bees should be dead
+     */
+    public function thereforeAllTheBeesShouldBeDead()
+    {
+        Assert::isTrue($this->hive->allBeesAreDead());
     }
 }

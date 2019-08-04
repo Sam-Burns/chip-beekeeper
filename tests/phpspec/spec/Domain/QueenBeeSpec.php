@@ -5,6 +5,11 @@ use PhpSpec\ObjectBehavior;
 
 class QueenBeeSpec extends ObjectBehavior
 {
+    function let()
+    {
+        $this->beConstructedThrough('newWithFullLifespan');
+    }
+
     function it_is_initialised_with_100_hit_points()
     {
         $this->beConstructedThrough('newWithFullLifespan');
@@ -36,5 +41,12 @@ class QueenBeeSpec extends ObjectBehavior
         $this->beConstructedThrough('newWithRemainingHitPoints', [4]);
         $this->hit();
         $this->isAlive()->shouldBe(false);
+    }
+
+    function it_knows_if_it_is_damaged()
+    {
+        $this->isDamaged()->shouldBe(false);
+        $this->hit();
+        $this->isDamaged()->shouldBe(true);
     }
 }

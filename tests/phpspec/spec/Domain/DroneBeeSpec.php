@@ -1,13 +1,15 @@
 <?php
-
 namespace spec\ChipBeekeeper\Domain;
 
-use ChipBeekeeper\Domain\DroneBee;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class DroneBeeSpec extends ObjectBehavior
 {
+    function let()
+    {
+        $this->beConstructedThrough('newWithFullLifespan');
+    }
+
     function it_is_initialised_with_50_hit_points()
     {
         $this->beConstructedThrough('newWithFullLifespan');

@@ -37,4 +37,16 @@ abstract class Bee
     {
         return !$this->hitPointCounter->hasRunOutOfHitPoints();
     }
+
+    public function isDamaged(): bool
+    {
+        return $this->hitPointCounter->getRemainingHitPoints() < static::FULL_LIFESPAN;
+    }
+
+    public function kill()
+    {
+        while ($this->isAlive()) {
+            $this->hit();
+        }
+    }
 }
